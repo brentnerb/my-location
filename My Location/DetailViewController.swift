@@ -12,7 +12,7 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var locationLabel: UILabel!
     
-    @IBOutlet weak var coordinatesLabel: UILabel!
+    @IBOutlet weak var coordinatesLabel: UITextView!
     
     var selectedLocation: MLLocation!
     
@@ -35,6 +35,8 @@ class DetailViewController: UIViewController {
     }
     
 
+    
+    
     /*
     // MARK: - Navigation
 
