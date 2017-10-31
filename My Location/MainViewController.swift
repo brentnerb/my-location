@@ -24,22 +24,6 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         title = "Main"
         
-        if currentLocationForEditing != nil {
-            currentlyModifyingLabel.text = DataService.instance.locations[currentLocationForEditing!].name
-        }
-        
-//        if let loc = currentLocationForEditing?.name {
-//            currentlyModifyingLabel.text = loc
-//        }
-        
-        if let lats = DataService.instance.locations[currentLocationForEditing!].latitudes, let longs = DataService.instance.locations[currentLocationForEditing!].longitudes {
-            var text = ""
-            for i in 0..<lats.count {
-                text += "\(lats[i]), \(longs[i]) \r\n"
-            }
-            infoLabel.text = text
-        }
-        
         locationManager = CLLocationManager()
         
         locationManager?.requestWhenInUseAuthorization()
@@ -47,21 +31,35 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
         locationManager?.delegate = self
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
         locationManager?.startUpdatingLocation()
+        
+//        if currentLocationForEditing != nil {
+//            var location = DataService.instance.locations[currentLocationForEditing!]
+//            currentlyModifyingLabel.text = location.name
+//            infoLabel.text = location.showSavedDataPoints()
+//        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        updateLabel()
     }
     
     @IBAction func saveAction(_ sender: UIButton) {
-        DataService.instance.locations[currentLocationForEditing!].latitudes?.append(locationManager?.location?.coordinate.latitude)
-        DataService.instance.locations[currentLocationForEditing!].longitudes?.append(locationManager?.location?.coordinate.longitude)
         
-        var text = ""
-        for i in 0..<DataService.instance.locations.count {
-            text += "\(lats[i]), \(longs[i]) \r\n"
-        }
-        infoLabel.text = text
+        var location = DataService.instance.locations[currentLocationForEditing!] as MLLocation
+        location.addLatitude(lat: (locationManager?.location?.coordinate.latitude)!)
+        location.addLongitude(lon: (locationManager?.location?.coordinate.longitude)!)
+        
+        updateLabel()
         
     }
     
-
+    func updateLabel() {
+        if currentLocationForEditing != nil {
+            var location = DataService.instance.locations[currentLocationForEditing!]
+            currentlyModifyingLabel.text = location.name
+            infoLabel.text = location.showSavedDataPoints()
+        }
+    }
     
 
     override func didReceiveMemoryWarning() {
@@ -72,6 +70,12 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         latitudeLabel.text = "\(locations[0].coordinate.latitude)"
         longitudeLabel.text = "\(locations[0].coordinate.longitude)"
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? ChooserTableViewController {
+            vc.mainVC = self
+        }
     }
 
 }

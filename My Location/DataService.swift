@@ -15,18 +15,32 @@ class DataService {
     private(set) public var locations = [MLLocation]()
     
     func loadLocations() {
-        guard let savedLocations = (UserDefaults.standard.array(forKey: "savedLocations") as? [MLLocation]) else { return }
-        locations = savedLocations
+        if UserDefaults.standard.object(forKey: "savedLocations") != nil {
+            let data = UserDefaults.standard.object(forKey: "savedLocations") as! Data
+            locations = NSKeyedUnarchiver.unarchiveObject(with: data) as! [MLLocation]
+            
+            print("Loaded locations. \(locations)")
+        }
     }
     
     func saveLocations() {
-        UserDefaults.standard.set(locations, forKey: "savedLocations")
-        print("Saving locations...")
+//        UserDefaults.standard.set(locations, forKey: "savedLocations")
+        let locationData: Data = NSKeyedArchiver.archivedData(withRootObject: locations)
+        UserDefaults.standard.set(locationData, forKey: "savedLocations")
+//        UserDefaults.synchronize()
+        print("Saving locations...\(locations)")
     }
     
     func newLocation(named: String) {
-        let locationToAdd = MLLocation(name: named, latitudes: nil, longitudes: nil)
+//        let locationToAdd = MLLocation(name: named, latitudes: [], longitudes: [])
+        var locationToAdd = MLLocation(name: named, latitudes: [], longitudes: [])
+//        locationToAdd.name = named
         locations.append(locationToAdd)
     }
+    
+//    func newPointAt(_ latitude: Double, _ longitude: Double, location: MLLocation) {
+//        location.addLatitude(lat: latitude)
+//        location.addLongitude(lon: longitude)
+//    }
     
 }

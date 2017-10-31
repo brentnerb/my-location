@@ -22,6 +22,8 @@ class DetailViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         locationLabel.text = "\(selectedLocation.name)"
+        
+        coordinatesLabel.text = selectedLocation.showSavedDataPoints()
   
     }
 
@@ -29,14 +31,7 @@ class DetailViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
         
-        if let lats = selectedLocation.latitudes, let longs = selectedLocation.longitudes {
-            var text = ""
-            for i in 0..<lats.count {
-                text.append("\(lats[i]), \(longs[i]) /r/n")
-            }
-            
-            coordinatesLabel.text = text
-        }
+
     }
     
 

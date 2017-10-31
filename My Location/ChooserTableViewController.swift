@@ -10,6 +10,8 @@ import UIKit
 
 class ChooserTableViewController: UITableViewController {
 
+    var mainVC: MainViewController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,6 +53,10 @@ class ChooserTableViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        mainVC.currentLocationForEditing = indexPath.row
+        self.dismiss(animated: true, completion: nil)
+    }
 
     /*
     // Override to support conditional editing of the table view.
